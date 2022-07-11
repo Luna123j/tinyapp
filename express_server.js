@@ -32,19 +32,38 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase};
+  const templateVars = { id: req.params.id, longURL: urlDatabase };
   res.render("urls_show", templateVars);
 });
 
+app.get("/u/:id", (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
+
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
+  const body = req.body;
+  urlDatabase[Object.keys(body)] = body[Object.keys(body)];
+  console.log(urlDatabase);// Log the POST request body to the console
   res.send("Ok"); // Respond with 'Ok' (we will replace this)
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-const generateRandomString =function() {
+const generateRandomString = function() {
+  let letter = "";
+  for (let i = 0; i < 6; i++) {
+    letter += getRandomInt(48, 90);
+  }
+  return letter;
+};
 
+const getRandomInt = function(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 };
