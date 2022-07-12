@@ -31,12 +31,17 @@
           <% for (let id in urls) { %>
             <tr>
               <td><%= id %></td>
-              <td><%= urls[id] %></td>
+              <td><%= urls[id] %>
+                <form method="POST" action=/urls/<%= id %>/delete>
+                  <button>Delete</button>
+                </form>
+              </td>
             </tr>
-          <% } %>
-        </tbody>
-      </table>
+            <% } %>
+          </tbody>
+        </table>
     </main>
+    
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

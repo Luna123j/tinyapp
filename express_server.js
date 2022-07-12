@@ -48,6 +48,11 @@ app.post("/urls", (req, res) => {
   res.send("Ok"); // Respond with 'Ok' (we will replace this)
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
 
 
 app.listen(PORT, () => {
@@ -55,9 +60,10 @@ app.listen(PORT, () => {
 });
 
 const generateRandomString = function() {
+  const str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let letter = "";
   for (let i = 0; i < 6; i++) {
-    letter += getRandomInt(48, 90);
+    letter += str[getRandomInt(0, 61)];
   }
   return letter;
 };
