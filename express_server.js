@@ -45,7 +45,7 @@ app.post("/urls", (req, res) => {
   const body = req.body;
   urlDatabase[Object.keys(body)] = body[Object.keys(body)];
   console.log(urlDatabase);// Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  res.redirect("/urls");
 });
 
 app.post("/urls/:id/delete", (req, res) => {
