@@ -32,7 +32,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
+  const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
 
@@ -61,6 +61,17 @@ app.post("/urls/:id", (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/login", (req, res) => {
+  res.cookie('username',req.body[Object.keys(req.body)]);
+  res.redirect("/urls");
+});
+
+// app.get("/login", (req, res) => {
+//   const templateVars = {
+//     username: req.cookies["username"],
+//   };
+//   res.render('/partials/_header',templateVars);
+// });
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
