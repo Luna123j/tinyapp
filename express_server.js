@@ -32,7 +32,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase };
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render("urls_show", templateVars);
 });
 
@@ -43,7 +43,8 @@ app.get("/u/:id", (req, res) => {
 
 app.post("/urls", (req, res) => {
   const body = req.body;
-  urlDatabase[Object.keys(body)] = body[Object.keys(body)];
+  const shortURL = generateRandomString();
+  urlDatabase[shortURL] = body[Object.keys(body)];
   console.log(urlDatabase);// Log the POST request body to the console
   res.redirect("/urls");
 });
@@ -53,6 +54,12 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls");
 });
 
+app.post("/urls/:id", (req, res) => {
+  const body = req.body;
+  const newURL = body[Object.keys(body)];
+  urlDatabase[req.params.id] = newURL;
+  res.redirect("/urls");
+});
 
 
 app.listen(PORT, () => {
