@@ -18,17 +18,15 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>     
       </div>
     </div>
-    <% if(!username) { %>
+    <% if(!user) { %>
     <div>
-      <form method="POST" action=/login>
-        <input type="text" name="username" placeholder = "username">
-        <button type="submit" style="background-color:rgba(255, 0, 0, 0); border-color: black;border-radius: 5px;">Login</button>
-      </form>
-    </div>
+        <button type="submit" style="background-color:rgba(255, 0, 0, 0); border-color: black;border-radius: 5px;" onclick="location.href='/login';" >Login</button>
+      <button type="submit" style="background-color:rgba(255, 0, 0, 0); border-color: black;border-radius: 5px;" onclick="location.href='/register';" >Register</button>
+  </div>
     <% }%>
-    <% if(username) { %>
+    <% if(user) { %>
       <div>
-         <form method="POST" action=/logout>Logged in as:<%= username%>
+         <form method="POST" action=/logout>Logged in as:<%= user.email%>
           <button type="submit" style="background-color:rgba(255, 0, 0, 0); border-color: black;border-radius: 5px;">Logout</button>
         </form>
       </div>
