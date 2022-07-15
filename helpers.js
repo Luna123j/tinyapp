@@ -33,7 +33,16 @@ const callHelpFunctions = function(urlDatabase) {
     return urlDatabaseByUser;
   };
 
-  return { generateRandomString, getUserByEmail, urlsForUser }
+  const sortVisitor = function(urlID, visitorInfo) {
+    for (let url in visitorInfo) {
+      if (urlID === url) {
+        return visitorInfo[url];
+      }
+    }
+    return {};
+  };
+
+  return { sortVisitor, generateRandomString, getUserByEmail, urlsForUser };
 };
 
 module.exports = callHelpFunctions;
