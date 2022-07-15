@@ -70,7 +70,7 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
   if (!urlDatabase[req.params.id]) {
-    res.status(404).send('The shorten url is not exist');
+    return res.status(404).send('The shorten url is not exist');
   }
   if (!req.session.userId) {
     return res.send("please login to check");
@@ -85,6 +85,9 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
+  if (!urlDatabase[req.params.id]) {
+    return res.status(404).send('The shorten url is not exist');
+  }
   urlDatabase[req.params.id]['visits']++;
   let visitorID = "";
   if (!req.session.userId) {
@@ -170,7 +173,7 @@ app.post("/urls", (req, res) => {
 
 app.delete("/urls/:id", (req, res) => {
   if (!urlDatabase[req.params.id]) {
-    res.status(404).send('The shorten url is not exist');
+    return res.status(404).send('The shorten url is not exist');
   }
   if (!req.session.userId) {
     return res.send("please login to delete");
