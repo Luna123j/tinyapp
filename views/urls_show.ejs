@@ -21,12 +21,20 @@
         <h5 class="card-title">TinyURL for: <%= longURL %></h5>
         <p class="card-text">
           Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
+      
+        </p>
+        <p class="card-text">
+          Total Visits: <a><%= visits %></a>    
+          Total Unique visitors:
+        </p>
+        <p class="card-text">
+          Track of visits: 
         </p>
       </div>
       <div class="card-body" style="background-color: rgb(220, 220, 220);">
         <h5 style="font-size: 150%; color: gray; font-weight: bold;">Edit</h5>
         <p class="card-text">
-          <form method="POST" action=/urls/<%= id %>>
+          <form method="POST" action=/urls/<%= id %>?_method=PUT >
             New URL: <input type = "text" name = "newURL">
           <button type="submit" class="btn btn-primary">Submit</button>
           </form>
