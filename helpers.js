@@ -2,6 +2,7 @@ const callHelpFunctions = function(urlDatabase) {
   const generateRandomString = function() {
     const str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let letter = "";
+    
     for (let i = 0; i < 6; i++) {
       letter += str[getRandomInt(0, 61)];
     }
@@ -25,6 +26,7 @@ const callHelpFunctions = function(urlDatabase) {
 
   const urlsForUser = function(id) {
     const urlDatabaseByUser = {};
+
     for (let urlID in urlDatabase) {
       if (urlDatabase[urlID]['userID'] === id) {
         urlDatabaseByUser[urlID] = urlDatabase[urlID];
