@@ -1,3 +1,6 @@
+////////////////////////////
+////    requirement     ////
+////////////////////////////
 const express = require("express");
 // const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
@@ -7,7 +10,9 @@ const callHelpFunctions = require('./helpers');
 const app = express();
 const PORT = 8080;
 
-
+////////////////////////////
+////    middleware      ////
+////////////////////////////
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
@@ -21,6 +26,9 @@ app.use(cookieSession({
 
 app.use(methodOverride('_method'));
 
+////////////////////////////
+////    constants       ////
+////////////////////////////
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
@@ -52,10 +60,13 @@ const { sortVisitor, generateRandomString, getUserByEmail, urlsForUser }
   = callHelpFunctions(urlDatabase);
 
 
+////////////////////////////
+////    Route           ////
+////////////////////////////
+
 app.get("/urls", (req, res) => {
   const urlDatabaseByUser = urlsForUser(req.session.userId);
   const templateVars = { urls: urlDatabaseByUser, user: users[req.session.userId] };
-  console.log(urlDatabase);
   res.render("urls_index", templateVars);
 });
 
@@ -136,11 +147,67 @@ app.post("/urls", (req, res) => {
   const body = req.body;
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = { longURL: body[Object.keys(body)], userID: req.session.userId, visits: 0 };
-  // console.log(urlDatabase);// Log the POST request body to the console
   res.redirect("/urls");
 });
 
 
+app.delete("/urls/:id", (req, res) => {
+  if (!urlDatabase[req.params.id]) {
+    return res.status(404).send('The shorten url is not exist');
+  }
+  if (!req.session.userId) {
+    return res.send("please login to delete");
+  }
+  if (urlDatabase[req.params.id]['userID'] !== req.session.userId) {
+    return res.send("can not access the url");
+  }
+  console.log(urlDatabase);
+  delete urlDatabase[req.params.id];
+  res.redirect("/urls");
+});
+
+app.put("/urls/:id", (req, res) => {
+  const newURL = req.body.newURL;
+  urlDatabase[req.params.id] = { longURL: newURL, userID: req.session.userId };
+  res.redirect("/urls");
+});
+
+app.get("/login", (req, res) => {
+  if (req.session.userId) {
+    return res.redirect("/urls");
+  }
+  const templateVars = {
+    user: users[req.session.userId],
+  };
+  res.render('urls_login', templateVars);
+
+});
+
+app.post("/login", (req, res) => {
+
+  const user = getUserByEmail(users, req.body.email);
+  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+  if (user === null || bcrypt.compareSync(user.password, hashedPassword)) {
+    return res.status(404).send('User not exist');
+  }
+  req.session.userId = user.id;
+  res.redirect("/urls");
+
+});
+
+app.post("/logout", (req, res) => {
+  req.session = null;
+  res.redirect("/urls");
+});
+
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
+
+/////////////////////////////////////////////
+////    Route before done strech         ////
+/////////////////////////////////////////////
 
 // app.get("/urls/:id/delete", (req, res) => {
 //   if (!urlDatabase[req.params.id]) {
@@ -171,67 +238,8 @@ app.post("/urls", (req, res) => {
 //   res.redirect("/urls");
 // });
 
-app.delete("/urls/:id", (req, res) => {
-  if (!urlDatabase[req.params.id]) {
-    return res.status(404).send('The shorten url is not exist');
-  }
-  if (!req.session.userId) {
-    return res.send("please login to delete");
-  }
-  if (urlDatabase[req.params.id]['userID'] !== req.session.userId) {
-    return res.send("can not access the url");
-  }
-  console.log(urlDatabase);
-  delete urlDatabase[req.params.id];
-  res.redirect("/urls");
-});
-
-
 // app.post("/urls/:id", (req, res) => {
 //   const newURL = req.body.newURL;
 //   urlDatabase[req.params.id] = { longURL: newURL, userID: req.session.userId };
 //   res.redirect("/urls");
 // });
-
-app.put("/urls/:id", (req, res) => {
-  const newURL = req.body.newURL;
-  urlDatabase[req.params.id] = { longURL: newURL, userID: req.session.userId };
-  res.redirect("/urls");
-});
-
-
-app.get("/login", (req, res) => {
-  if (req.session.userId) {
-    return res.redirect("/urls");
-  }
-  const templateVars = {
-    user: users[req.session.userId],
-  };
-  res.render('urls_login', templateVars);
-
-});
-
-app.post("/login", (req, res) => {
-
-  const user = getUserByEmail(users, req.body.email);
-  const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-  if (user === null || bcrypt.compareSync(user.password, hashedPassword)) {
-    return res.status(404).send('User not exist');
-  }
-  req.session.userId = user.id;
-  res.redirect("/urls");
-
-});
-
-app.post("/logout", (req, res) => {
-  // res.clearCookie('user_id');
-  // console.log(users)
-  req.session = null;
-  res.redirect("/urls");
-});
-
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
-
